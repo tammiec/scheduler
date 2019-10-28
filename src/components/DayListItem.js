@@ -11,14 +11,9 @@ export default function DayListItem(props) {
   });
 
   const formatSpots = (spotsNum) => {
-    let formatted = spotsNum + ' spots';
-    if (spotsNum === 0) {
-      formatted = 'no spots';
-    }
-    if (spotsNum === 1) {
-      formatted = spotsNum + ' spot';
-    }
-    return formatted;
+    return spotsNum === 0 ? 'no spots' :
+      spotsNum === 1 ? spotsNum + ' spot' : 
+      spotsNum + ' spots';
   }
 
   return (
