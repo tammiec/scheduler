@@ -1,7 +1,6 @@
 import React from "react";
 import 'components/DayListItem.scss';
 import classNames from 'classnames';
-import { format } from "util";
 
 export default function DayListItem(props) {
 
@@ -10,7 +9,7 @@ export default function DayListItem(props) {
     'day-list__item--full': (props.spots === 0)
   });
 
-  const formatSpots = (spotsNum) => {
+  const formatSpots = spotsNum => {
     return spotsNum === 0 ? 'no spots' :
       spotsNum === 1 ? spotsNum + ' spot' : 
       spotsNum + ' spots';
