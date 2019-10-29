@@ -16,6 +16,7 @@ export function getAppointmentsForDay(state, name) {
 
 export function getInterview(state, interview) {
   const apptInfo = Object.values(state.appointments);
+
   if (!interview || typeof interview.interviewer !== 'number') {
     return interview;
   } else {

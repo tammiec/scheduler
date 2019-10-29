@@ -17,6 +17,7 @@ export default function Application(props) {
   const setDay = day => setState({ ...state, day });
   // const setDays = days => setState(prev => ({...prev, days}));
 
+  // Call API to get data and set state
   useEffect(() => {
     Promise.all([
       axios.get('/api/days'),
@@ -27,9 +28,9 @@ export default function Application(props) {
     }).catch(err => console.log(err));
   }, [])
 
+  //Loop through appointments to render Appointment component for each appointment
   const appointments = getAppointmentsForDay(state, state.day);
   const schedule = appointments.map(appointment => {
-
     const interview = getInterview(state, appointment.interview);
 
     return (
@@ -42,6 +43,7 @@ export default function Application(props) {
     )
   })
 
+  // Render App
   return (
     <main className="layout">
       <section className="sidebar">
