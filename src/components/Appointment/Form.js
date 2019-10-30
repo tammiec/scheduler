@@ -3,7 +3,6 @@ import InterviewerList from '../InterviewerList'
 import Button from '../Button';
 
 export default function Form(props) {
-
   const [interviewer, setInterviewer] = useState(props.interviewer.id || null);
   const [name, setName] = useState(props.name || '');
 
