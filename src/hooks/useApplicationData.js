@@ -28,6 +28,12 @@ export default function useApplicationData() {
           }
         }
       };
+    },
+    setDays(state, action) {
+      return state = {
+        ...state,
+        days: action.days
+      }
     }
   };
 
@@ -57,10 +63,24 @@ export default function useApplicationData() {
     ]).then(all => {
       dispatch({type: 'setApplicationData', days: all[0].data, appointments: all[1].data, interviewers: all[2].data});
     }).catch(err => console.log(err));
-  }, [])
-  
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('/api/days')
+      .then(res => {
+        dispatch({type: 'setDays', days: res.data})
+      });
+  }, [state.days]);
+
+  // const updateSpots = (id, change) => {
+  //   const day = Math.floor(id / 5);
+  //   state.days[day].spots += change;
+  //   dispatch({type: 'setDays', days: state.days});
+  // }  
+
   // Book Interview Function
-  const bookInterview = (id, interview) => {
+  const bookInterview = (id, interview, edit = false) => {
     const appointment = {
       ...state.appointments[id],
       interview: {...interview}
@@ -73,7 +93,12 @@ export default function useApplicationData() {
       .put(`/api/appointments/${id}`, appointment)
       .then((res) => {
         dispatch({type: 'setInterview', id, interview});
-      });
+      })
+      // .then(() => {
+      //   if (!edit) {
+      //     updateSpots(id, -1);
+      //   }
+      // });
   }
 
   // Cancel Interview Function
@@ -90,7 +115,8 @@ export default function useApplicationData() {
       .delete(`/api/appointments/${id}`)
       .then(res => {
         dispatch({type: 'setInterview', id, interview: null})
-      });
+      })
+      // .then(() => updateSpots(id, 1));
   }
 
   return { state, setDay, bookInterview, cancelInterview };
