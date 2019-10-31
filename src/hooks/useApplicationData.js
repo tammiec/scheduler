@@ -5,46 +5,40 @@ import useSocket from './useSocket';
 export default function useApplicationData() {
 
   const { socket } = useSocket();
-  console.log('socket:', socket)
-
-  useEffect(() => {
-    if (socket) {
-      socket.current.onmessage = event => {
-        const msg = JSON.parse(event.data);
-        if (msg.type === 'SET_INTERVIEW') {
-          console.log(msg);
-        }
-      }
-    }
-  }, [socket]);
 
   const reducers = {
     setDay(state, action) {
       return {
         ...state, 
-        day: action.day
+        day: action.payload
       };
     },
     setApplicationData(state, action) {
       return {
         ...state,
-        days: action.days,
-        appointments: action.appointments,
-        interviewers: action.interviewers
+        days: action.payload[0].data,
+        appointments: action.payload[1].data,
+        interviewers: action.payload[2].data
       };
     },
     setInterview(state, action) {
-      return {
+      let obj = {
         ...state, 
         appointments: {
           ...state.appointments,
-          [action.id]: {
-            ...state.appointments[action.id],
-            interview: {...action.interview},
+          [action.payload.id]: {
+            ...state.appointments[action.payload.id],
+            interview: !action.payload.interview ? null : {...action.payload.interview},
           }
-        },
-        days: action.days
+        }
       };
+      return obj;
+    },
+    setDays(state, action) {
+      return {
+        ...state,
+        days: [...action.payload.days]
+      }
     }
   };
 
@@ -59,7 +53,7 @@ export default function useApplicationData() {
     interviewers: {}
   });
   
-  const setDay = day => dispatch({ type: 'setDay', day });
+  const setDay = day => dispatch({ type: 'setDay', payload: day });
 
   // Call API to get data and set state
   useEffect(() => {
@@ -68,34 +62,61 @@ export default function useApplicationData() {
       axios.get('/api/appointments'),
       axios.get('/api/interviewers')
     ]).then(all => {
-      dispatch({type: 'setApplicationData', days: all[0].data, appointments: all[1].data, interviewers: all[2].data});
+      dispatch({type: 'setApplicationData', payload: all});
     }).catch(err => console.log(err));
   }, []);
 
+  const updateSpots = function() {
+    return axios
+      .get('/api/days')
+      .then((res) => {
+        dispatch({type: 'setDays', payload: {days: res.data}})
+      })
+  }
+
   // Book Interview Function
-  const bookInterview = (id, interview, edit = false) => {
+  const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
       interview: {...interview}
     };
 
-    return Promise.all([
-      axios.get('/api/days'),
-      axios.put(`/api/appointments/${id}`, appointment)
-    ]).then(all => {
-      dispatch({type: 'setInterview', id, interview, days: all[0].data});
-    }).catch(err => console.log(err));
+    return axios
+      .put(`/api/appointments/${id}`, appointment)
+      .then(res => {
+        dispatch({type: 'setInterview', payload: { id, interview: interview }});
+      }).then(() => {
+        updateSpots(id, -1);
+      })
+      .catch(err => console.log(err));
   }
 
   // Cancel Interview Function
   const cancelInterview = (id) => {
-    return Promise.all([
-      axios.get('/api/days'),
-      axios.delete(`/api/appointments/${id}`)
-    ]).then(all => {
-      dispatch({type: 'setInterview', id, interview: null, days: all[0].data});
-    }).catch(err => console.log(err));
+    return axios
+      .delete(`/api/appointments/${id}`)
+      .then(res => {
+        dispatch({type: 'setInterview', payload: { id, interview: null }});
+      }).then(() => {
+        updateSpots(id, 1);
+      })
+      .catch(err => console.log(err));
   }
+
+  useEffect(() => {
+    const current = socket.current;
+
+    if (current) {
+      current.onmessage = event => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'SET_INTERVIEW') {
+          dispatch({type: 'setInterview', payload: { id: msg.id, interview: msg.interview }});
+        }
+        updateSpots();
+      }
+    }
+
+  }, [socket]);
 
   return { state, setDay, bookInterview, cancelInterview };
 

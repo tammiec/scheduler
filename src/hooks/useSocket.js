@@ -5,7 +5,7 @@ export default function useSocket() {
 
   useEffect(() => {
     
-    socket.current = new WebSocket('ws://localhost:8001');
+    socket.current = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
 
     socket.current.onopen = event => {
       socket.current.send('ping');
