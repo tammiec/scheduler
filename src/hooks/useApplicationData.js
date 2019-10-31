@@ -71,7 +71,7 @@ export default function useApplicationData() {
       .then(res => {
         dispatch({type: 'setDays', days: res.data})
       });
-  }, [state.days]);
+  }, [state.appointments]);
 
   // const updateSpots = (id, change) => {
   //   const day = Math.floor(id / 5);
