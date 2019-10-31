@@ -1,7 +1,22 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
+import useSocket from './useSocket';
 
 export default function useApplicationData() {
+
+  const { socket } = useSocket();
+  console.log('socket:', socket)
+
+  useEffect(() => {
+    if (socket) {
+      socket.current.onmessage = event => {
+        const msg = JSON.parse(event.data);
+        if (msg.type === 'SET_INTERVIEW') {
+          console.log(msg);
+        }
+      }
+    }
+  }, [socket]);
 
   const reducers = {
     setDay(state, action) {
