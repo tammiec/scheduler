@@ -5,13 +5,13 @@ export default function useApplicationData() {
 
   const reducers = {
     setDay(state, action) {
-      return state = {
+      return {
         ...state, 
         day: action.day
       };
     },
     setApplicationData(state, action) {
-      return state = {
+      return {
         ...state,
         days: action.days,
         appointments: action.appointments,
@@ -19,7 +19,7 @@ export default function useApplicationData() {
       };
     },
     setInterview(state, action) {
-      return state = {
+      return {
         ...state, 
         appointments: {
           ...state.appointments,
