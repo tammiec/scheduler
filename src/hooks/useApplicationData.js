@@ -71,7 +71,7 @@ export default function useApplicationData() {
       .get('/api/days')
       .then((res) => {
         dispatch({type: 'setDays', payload: {days: res.data}})
-      })
+      }).catch(err => console.log(err));
   }
 
   // Book Interview Function
