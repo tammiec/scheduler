@@ -5,14 +5,14 @@ const reducers = {
       day: action.payload
     };
   },
-  // setApplicationData(state, action) {
-  //   return {
-  //     ...state,
-  //     days: action.payload[0].data,
-  //     appointments: action.payload[1].data,
-  //     interviewers: action.payload[2].data
-  //   };
-  // },
+  setApplicationData(state, action) {
+    return {
+      ...state,
+      days: action.payload[0].data,
+      appointments: action.payload[1].data,
+      interviewers: action.payload[2].data
+    };
+  },
   setInterview(state, action) {
     let obj = {
       ...state, 
