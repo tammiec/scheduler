@@ -1,50 +1,11 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 import useSocket from './useSocket';
+import reducer from '../reducers/application';
 
 export default function useApplicationData() {
 
   const { socket } = useSocket();
-
-  const reducers = {
-    setDay(state, action) {
-      return {
-        ...state, 
-        day: action.payload
-      };
-    },
-    setApplicationData(state, action) {
-      return {
-        ...state,
-        days: action.payload[0].data,
-        appointments: action.payload[1].data,
-        interviewers: action.payload[2].data
-      };
-    },
-    setInterview(state, action) {
-      let obj = {
-        ...state, 
-        appointments: {
-          ...state.appointments,
-          [action.payload.id]: {
-            ...state.appointments[action.payload.id],
-            interview: !action.payload.interview ? null : {...action.payload.interview},
-          }
-        }
-      };
-      return obj;
-    },
-    setDays(state, action) {
-      return {
-        ...state,
-        days: [...action.payload.days]
-      }
-    }
-  };
-
-  const reducer = function(state, action) {
-    return reducers[action.type](state, action) || state;
-  };
 
   const [state, dispatch] = useReducer(reducer, {
     day: 'Monday',
@@ -63,7 +24,8 @@ export default function useApplicationData() {
       axios.get('/api/interviewers')
     ]).then(all => {
       dispatch({type: 'setApplicationData', payload: all});
-    }).catch(err => console.log(err));
+    })
+    // .catch(err => console.log(err));
   }, []);
 
   const updateSpots = function() {
@@ -71,7 +33,8 @@ export default function useApplicationData() {
       .get('/api/days')
       .then((res) => {
         dispatch({type: 'setDays', payload: {days: res.data}})
-      }).catch(err => console.log(err));
+      })
+      // .catch(err => console.log(err));
   }
 
   // Book Interview Function
@@ -86,9 +49,9 @@ export default function useApplicationData() {
       .then(res => {
         dispatch({type: 'setInterview', payload: { id, interview: interview }});
       }).then(() => {
-        updateSpots(id, -1);
+        updateSpots();
       })
-      .catch(err => console.log(err));
+      // .catch(err => console.log(err));
   }
 
   // Cancel Interview Function
@@ -98,9 +61,9 @@ export default function useApplicationData() {
       .then(res => {
         dispatch({type: 'setInterview', payload: { id, interview: null }});
       }).then(() => {
-        updateSpots(id, 1);
+        updateSpots();
       })
-      .catch(err => console.log(err));
+      // .catch(err => console.log(err));
   }
 
   useEffect(() => {
@@ -119,5 +82,5 @@ export default function useApplicationData() {
   }, [socket]);
 
   return { state, setDay, bookInterview, cancelInterview };
-
+  
 }

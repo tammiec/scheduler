@@ -54,15 +54,15 @@ export default function Appointment(props) {
   }
 
   useEffect(() => {
-    if (props.interview) {
+    if (props.interview && mode === EMPTY) {
       transition(SHOW);
-    } else if (!props.interview) {
+    } else if (!props.interview && mode === SHOW) {
       transition(EMPTY);
     }
-  }, [props.interview])
+  }, [props.interview, mode, transition])
 
   return (
-    <article className="appointment">
+    <article className="appointment" data-testid='appointment' >
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={() => transition(CREATE)} />}
       {mode === SHOW && props.interview && (

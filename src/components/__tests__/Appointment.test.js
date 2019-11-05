@@ -6,7 +6,7 @@ import Appointment from "../Appointment/index";
 
 afterEach(cleanup);
 
-describe('tests the Appointment component', () => {
+describe('Appointment', () => {
   it("renders without crashing", () => {
     render(<Appointment />);
   });
