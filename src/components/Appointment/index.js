@@ -33,7 +33,7 @@ export default function Appointment(props) {
   const save = (name, interviewer) => {
     const interview = {
       student: name,
-      interviewer
+      interviewer: interviewer
     };
 
     transition(SAVING);
@@ -41,7 +41,7 @@ export default function Appointment(props) {
     props.bookInterview(props.id, interview)
       .then(() => transition(SHOW))
       .catch(err => transition(ERROR_SAVE, true));
-  }
+  };
 
   // Delete Interview
   const destroy = () => {
@@ -51,15 +51,16 @@ export default function Appointment(props) {
     props.cancelInterview(props.id)
       .then(() => transition(EMPTY))
       .catch(err => transition(ERROR_DELETE, true));
-  }
+  };
 
+  // Mode handling for Websockets - transitions to correct mode when other users update state
   useEffect(() => {
     if (props.interview && mode === EMPTY) {
       transition(SHOW);
     } else if (!props.interview && mode === SHOW) {
       transition(EMPTY);
     }
-  }, [props.interview, mode, transition])
+  }, [props.interview, mode, transition]);
 
   return (
     <article className="appointment" data-testid='appointment' >

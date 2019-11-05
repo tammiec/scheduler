@@ -32,10 +32,8 @@ export default function Application(props) {
         cancelInterview={cancelInterview}
       />
     )
-  })
+  });
 
-
-  // Render App
   return (
     <main className="layout">
       <section className="sidebar">

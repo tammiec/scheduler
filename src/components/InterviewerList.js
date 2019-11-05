@@ -26,7 +26,8 @@ export default function InterviewerList(props) {
   );
 }
 
+// PropTypes validation
 InterviewerList.propTypes = {
-  value: PropTypes.number,
+  value: PropTypes.object,
   onChange: PropTypes.func.isRequired
-}
+};

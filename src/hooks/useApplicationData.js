@@ -25,36 +25,34 @@ export default function useApplicationData() {
     ]).then(all => {
       dispatch({type: 'setApplicationData', payload: all});
     })
-    // .catch(err => console.log(err));
   }, []);
 
+  // Sends GET request to get updated number of spots from API
   const updateSpots = function() {
     return axios
       .get('/api/days')
       .then((res) => {
         dispatch({type: 'setDays', payload: {days: res.data}})
       })
-      // .catch(err => console.log(err));
-  }
+  };
 
-  // Book Interview Function
+  // Book an Interview
   const bookInterview = (id, interview) => {
     const appointment = {
       ...state.appointments[id],
-      interview: {...interview}
+      interview: {student: interview.student, interviewer: interview.interviewer.id}
     };
 
     return axios
       .put(`/api/appointments/${id}`, appointment)
       .then(res => {
-        dispatch({type: 'setInterview', payload: { id, interview: interview }});
+        dispatch({type: 'setInterview', payload: {id, interview: appointment.interview} });
       }).then(() => {
         updateSpots();
       })
-      // .catch(err => console.log(err));
-  }
+  };
 
-  // Cancel Interview Function
+  // Cancel an Interview
   const cancelInterview = (id) => {
     return axios
       .delete(`/api/appointments/${id}`)
@@ -63,9 +61,9 @@ export default function useApplicationData() {
       }).then(() => {
         updateSpots();
       })
-      // .catch(err => console.log(err));
-  }
+  };
 
+  // WebSocket message handler
   useEffect(() => {
     const current = socket.current;
 

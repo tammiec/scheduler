@@ -1,3 +1,4 @@
+// Replaces appointment IDs with appointment objects
 export function getAppointmentsForDay(state, name) {
   const filteredDay = state.days.filter(day => day.name === name);
 
@@ -12,8 +13,9 @@ export function getAppointmentsForDay(state, name) {
   });
   
   return apptsDetails;
-}
+};
 
+// Replaces interviewer ID with interviewer details
 export function getInterview(state, interview) {
   const apptInfo = Object.values(state.appointments);
 
@@ -28,8 +30,9 @@ export function getInterview(state, interview) {
     filteredInterview.interviewer = state.interviewers[filteredInterview.interviewer];
     return filteredInterview;
   }
-}
+};
 
+// Replaces list of interviewer IDs for each day with interviewer objects
 export function getInterviewersForDay(state, name) {
   const filteredDay = state.days.filter(day => day.name === name);
 
