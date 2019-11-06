@@ -2,7 +2,7 @@
 
 Interview Scheduler is a client application created using `create-react-app`, and is used in conjunction with the [scheduler-api](https://github.com/tammiec/scheduler-api) server application. It allows students to create, edit, and delete interview appointments. It also communicates with other users with a WebSocket server so that all updates can be viewed in real-time by all connected users.
 
-This project is part of the curriculum of the Lighthouse Labs Web Development Bootcamp.
+This project is part of the curriculum of the Lighthouse Labs Web Development Bootcamp. The web app can be viewed [here](https://interviewschedulerlhl.netlify.com/).
 
 ## Final Product
 
